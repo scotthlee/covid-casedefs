@@ -39,9 +39,12 @@ else:
 
 records = pd.read_csv(file_dir + 'records.csv')
 
-# Organizing by age group
-kids = np.where(records.age_adult == 0)[0]
-adults = np.where(records.age_adult == 1)[0]
+# Optionally removing folks who are sero+ but PCR-
+if OMIT_DISC:
+    no_disc = np.where([not (records.pcr_pos[i] == 0 and
+                             records.sero_pos[i] == 1) 
+                        for i in range(records.shape[0])])[0]
+    records = records.iloc[no_disc, :]
 
 # List of symptom names and case definitions
 symptom_list = [
@@ -54,13 +57,9 @@ symptom_list = [
 X = np.array(records[symptom_list], dtype=np.uint8)
 y = np.array(records.pcr_pos, dtype=np.uint8)
 
-# Optionally removing folks who are sero+ but PCR-
-if OMIT_DISC:
-    no_disc = np.where([not (records.pcr_pos[i] == 0 and
-                             records.sero_pos[i] == 1) 
-                        for i in range(records.shape[0])])
-    X = X[no_disc]
-    y = y[no_disc]
+# Organizing by age group
+kids = np.where(records.age_adult == 0)[0]
+adults = np.where(records.age_adult == 1)[0]
 
 # Making separate inputs and targets for kids, adults, and everyone
 X_list = [X, X[adults], X[kids]]

@@ -12,21 +12,22 @@ import tools
 Organizing the data
 '''
 # How to generate the RF's predictions for the whole dataset
-KF = True
+KF = False
 OOB = True
 
 # Whether this is running on Windows
 WINDOWS = True
 
 # Whether to remove contacts who are PCR- but seropositive
-REMOVE_SERO = True
+OMIT_DISC = True
 
 # Reading in the data
 if WINDOWS:
-    file_dir = WINDOWS_FILE_DIR
+    file_dir = 'C:/Users/yle4/'
 else:
-    file_dir = UNIX_FILE_DIR
+    file_dir = '/Users/scottlee/'
 
+file_dir += 'OneDrive - CDC/Documents/projects/hh-transmission/'
 records = pd.read_csv(file_dir + 'records.csv')
 
 # List of symptom names and case definitions
@@ -56,7 +57,7 @@ y = np.array(records.pcr_pos, dtype=np.uint8)
 sero = np.array(records.sero_pos, dtype=np.uint8)
 
 # Optionally removing sero-pos/PCR-neg contacts
-if REMOVE_SERO:
+if OMIT_DISC:
     # Dividing the records by sero/PCR status
     conc = np.where([not (y[i] == 0 and sero[i] == 1) 
                      for i in range(y.shape[0])])[0]
@@ -76,7 +77,7 @@ if REMOVE_SERO:
 '''
 Running RFs in a loop to get average predictions for each person in the data
 '''
-if KF and not REMOVE_SERO:
+if KF and not OMIT_DISC:
     print('Running the k-fold cross-validation loop.')
     n_splits = 5
     n_runs = 100
@@ -117,10 +118,10 @@ if OOB:
     rf.fit(X, y)
     oob_score = rf.oob_decision_function_[:, 1]
     
-    if REMOVE_SERO:
+    if OMIT_DISC:
         # Getting oob scores for the concordant contacts
-        conc_df['oob_score'] = oob_score
-        conc_df['oob_vote'] = tools.threshold(oob_score)
+        conc_df['rf_score'] = oob_score
+        conc_df['rf_vote'] = tools.threshold(oob_score)
         
         # Getting predicted scores for the discordant conctacts
         pos_probs = rf.predict_proba(X_disc)[:, 1]
@@ -130,11 +131,10 @@ if OOB:
         # Writing to disk
         conc_df.to_csv(file_dir + 'conc_records.csv', index=False)
         disc_df.to_csv(file_dir + 'disc_records.csv', index=False)
-        pd.concat([conc_df, disc_df], axis=0).to_csv(file_dir + 'records.csv',
-                                                     index=False)
+        records = pd.concat([conc_df, disc_df], axis=0)
     
     else:
-        records['oob_score'] = oob_score
+        records['oob_score'] = pd.Series(oob_score)
         records['oob_vote'] = tools.threshold(oob_score)
 
 # Writing the results to disk
