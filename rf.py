@@ -23,11 +23,10 @@ REMOVE_SERO = True
 
 # Reading in the data
 if WINDOWS:
-    file_dir = 'C:/Users/yle4/'
+    file_dir = WINDOWS_FILE_DIR
 else:
-    file_dir = '/Users/scottlee/'
+    file_dir = UNIX_FILE_DIR
 
-file_dir += 'OneDrive - CDC/Documents/projects/hh-transmission/'
 records = pd.read_csv(file_dir + 'records.csv')
 
 # List of symptom names and case definitions
