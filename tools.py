@@ -6,7 +6,6 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from scipy.stats import binom, chi2, norm
 from copy import deepcopy
 from multiprocessing import Pool
-from copy import deepcopy
 
 
 # Quick function for thresholding probabilities
@@ -349,52 +348,6 @@ def diff_boot_cis(ref,
     return cis
 
 
-def grid_metrics(targets,
-                 guesses,
-                 step=.01,
-                 min=0.0,
-                 max=1.0,
-                 by='f1',
-                 average='binary',
-                 counts=True):
-    cutoffs = np.arange(min, max, step)
-    if len((guesses.shape)) == 2:
-        if guesses.shape[1] == 1:
-            guesses = guesses.flatten()
-        else:
-            guesses = guesses[:, 1]
-    if average == 'binary':
-        scores = np.zeros(shape=(int(1/step), 15))
-        for i, cutoff in enumerate(cutoffs):
-            threshed = threshold(guesses, cutoff)
-            stats = clf_metrics(targets, threshed)
-            scores[i, 1:] = stats.values
-            scores[i, 0] = cutoff
-        scores = pd.DataFrame(scores,
-                              columns=['cutoff', 'tp', 'fp', 
-                                       'tn', 'fn', 'sens', 
-                                       'spec', 'ppv', 'npv', 
-                                       'f1', 'true', 'pred', 
-                                       'abs', 'rel', 'mcnemar'])
-    else:
-        scores = pd.DataFrame(np.zeros(shape=(int(1/step), 4)),
-                              columns=['cutoff', 'sens', 'ppv', 'f1'])
-        if counts:
-            new = pd.DataFrame(np.zeros(shape=(int(1/step), 4)),
-                                  columns=['true', 'pred',
-                                           'abs_diff', 'rel_diff'])
-            scores = pd.concat([scores, new], axis=1)
-        for i, cutoff in enumerate(cutoffs):
-            threshed = threshold(guesses, cutoff)
-            stats = diagnostics(targets,
-                                threshed,
-                                average=average,
-                                counts=counts)
-            scores.iloc[i, 1:] = stats.values
-            scores.cutoff[i] = cutoff
-    return scores
-
-
 def roc_cis(rocs, alpha=0.05, round=2):
     # Getting the quantiles to make CIs
     lq = (alpha / 2) * 100
@@ -507,75 +460,3 @@ def unique_combo(c):
         return c
     else:
         return None
-
-def odds_ratio(y, by, flip=False):
-    g0 = np.where(by == 0)[0]
-    g1 = np.where(by == 1)[0]
-    num = np.sum(y[g0]) / (np.sum(g0) - np.sum(y[g0]))
-    denom = np.sum(y[g1]) / (np.sum(g1) - np.sum(y[g1]))
-    if flip:
-        return denom / num
-    else:
-        return num / denom
-
-
-def cart_to_pol(x, y, deg=False):
-    '''Converts cartesian coordinates to polar coordinates.
-    
-    Keyword arguments:
-    x -- the x coordinates
-    y -- the y coordinates
-    deg -- whether to return theta in degrees
-    '''
-    r = pd.Series(np.sqrt(x**2 + y **2))
-    th = pd.Series(np.arctan2(y, x))
-    if deg:
-        th = (th / (2*np.pi)) * 360
-    coords = pd.concat([r, th], axis=1)
-    coords.columns = ['r', 'th']
-    return coords
-
-
-def pol_to_cart(r, th, deg=False):
-    '''Converts polar coordinates to cartesian coordinates.
-    
-    Keyword arguments:
-    r -- r of thetas
-    th - thetas
-    deg -- whether thetas are in degrees
-    '''
-    if deg:
-        th = (th / 360) * (2*np.pi)
-    x = pd.Series(r * np.cos(th))
-    y = pd.Series(r * np.sin(th))
-    coords = pd.concat([x, y], axis=1)
-    coords.columns = ['x', 'y']
-    return coords
-
-
-def sample_coverage(n, p, n_boot, a=0.05, dep=False):
-    samps = np.array([binom.rvs(1, prop, size=n) for prop in p])
-    if not dep:
-        covered = []
-        for i, samp in enumerate(samps):
-            boots = [boot_sample(samp) for n in range(n_boot)]
-            means = np.array([np.mean(samp[boot]) for boot in boots])
-            l = a/2 * 100
-            u = 100 - l
-            quants = np.percentile(means, q=(l, u), axis=0)
-            good_lower = np.array(p[i] >= quants[0], dtype=np.uint8)
-            good_upper = np.array(p[i] <= quants[1], dtype=np.uint8)
-            covered.append(np.array(good_lower + good_upper == 2))
-        return np.array(covered, dtype=np.uint8)
-    
-    else:
-        samps = samps.transpose()
-        boots = [boot_sample(samps) for n in range(n_boot)]                 
-        means = np.array([np.mean(samps[boot, :], axis=0) for boot in boots])
-        l = a/2 * 100
-        u = 100 - l
-        quants = np.percentile(means, q=(l, u), axis=0)
-        good_lower = np.array(p >= quants[0], dtype=np.uint8)
-        good_upper = np.array(p <= quants[1], dtype=np.uint8)
-        covered = np.array(good_lower + good_upper == 2, dtype=np.uint8)
-        return covered
