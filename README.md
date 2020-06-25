@@ -1,4 +1,4 @@
-# CDCgov GitHub Organization Open Source Project Template
+# Household transmission case definition study
 
 ## Overview
 
