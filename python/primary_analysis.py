@@ -46,12 +46,10 @@ Importing and organizing the data
 '''
 # Reading in the data
 if WINDOWS:
-    file_dir = 'C:/Users/yle4/'
+    file_dir = WINDOWS_FILE_DIR
 else:
-    file_dir = '/Users/scottlee/'
+    file_dir = UNIX_FILE_DIR
 
-file_dir += 'OneDrive - CDC/Documents/projects/hh-transmission/'
-file_dir += 'slices/disc omit/'
 records = pd.read_csv(file_dir + 'records.csv')
 
 # Optionally removing sero+/PCR-
