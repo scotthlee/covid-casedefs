@@ -1,3 +1,5 @@
+'''Functions and classes to support the primary analysis'''
+
 import pandas as pd
 import numpy as np
 

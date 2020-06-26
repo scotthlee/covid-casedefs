@@ -1,3 +1,9 @@
+'''This script runs a couple of loops to find the best-performing combinations of
+symptoms for predicting COVID. It makes heavy use of the multiprocessing
+module, and the second loop--triggered by the RUN_META parameter--is best run
+on a scientific workstation or HPC cluster.
+'''
+
 import numpy as np
 import pandas as pd
 import xlsxwriter
@@ -10,9 +16,6 @@ from sklearn.metrics import f1_score
 import tools
 import multi
 
-'''
-Setting some basic parameters for the experiment
-'''
 # Whether to calculate statistics for any-of-n combinations
 RUN_SINGLE = False
 
@@ -28,9 +31,6 @@ EXCEL = True
 # Whether this is running on Windows
 WINDOWS = True
 
-'''
-Importing and organizing the data
-'''
 # Reading in the data
 if WINDOWS:
     file_dir = WINDOWS_FILE_DIR
@@ -70,11 +70,8 @@ groups = [(X_list[i], y_list[i]) for i in range(len(X_list))]
 group_idx = [np.array(list(range(X.shape[0]))), adults, kids]
 group_names = ['all', 'adults', 'kids']
 
-'''
-Calculating performance for the any-of-n (single)
-and m-of-n [and/or] m-of-n (meta) combinations
-'''
-# Starting the pool
+# Calculating performance for the any-of-n (single) and m-of-n [and/or] 
+# m-of-n (meta) combinations
 p = Pool()
 
 # Setting the maximum combination size
@@ -197,9 +194,6 @@ if RUN_META:
         top_df = pd.concat(top_performers, axis=0)
         top_df.to_csv(file_dir + 'metacombo_stats.csv', index=False)
 
-'''
-Reconstructing some of the top-performing metacombinations
-'''
 # Bringing in the metacombination results
 mc_df = pd.read_csv(file_dir + 'top_meta.csv')
 
@@ -231,4 +225,6 @@ records['mc1'] = mc1
 records['mc2'] = mc2
 records['mc3'] = mc3
 records['mc4'] = mc4
+
+# Writing things back to disk
 records.to_csv(file_dir + 'records.csv', index=False)

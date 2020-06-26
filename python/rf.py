@@ -1,3 +1,9 @@
+'''Trains a random forest on the data and gets predictions one of two ways:
+from repeated k-fold cross validation, or from OOB scores from a single
+(large) forest. If OMIT_DISC is True, the sero+/PCR- contacts will be used as
+a test set.
+'''
+
 import numpy as np
 import pandas as pd
 
@@ -8,9 +14,7 @@ from multiprocessing import Pool
 
 import tools
 
-'''
-Organizing the data
-'''
+
 # How to generate the RF's predictions for the whole dataset
 KF = False
 OOB = True
@@ -73,9 +77,8 @@ if OMIT_DISC:
     disc_df = records.iloc[disc, :]
     conc_df = records.iloc[conc, :]
 
-'''
-Running RFs in a loop to get average predictions for each person in the data
-'''
+
+# Running RFs in a loop to get average predictions for each person in the data
 if KF and not OMIT_DISC:
     print('Running the k-fold cross-validation loop.')
     n_splits = 5

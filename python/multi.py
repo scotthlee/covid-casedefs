@@ -1,6 +1,4 @@
-'''
-Multiprocessing-enabled versions of functions from tools.py
-'''
+'''Multiprocessing-enabled versions of functions from tools.py'''
 
 import pandas as pd
 import numpy as np
@@ -36,7 +34,6 @@ def jackknife_metrics(targets,
         return scores, means
 
 
-# Calculates bootstrap confidence intervals for an estimator
 class boot_cis:
     def __init__(self,
                  targets, 

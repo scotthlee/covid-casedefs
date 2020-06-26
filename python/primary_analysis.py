@@ -1,3 +1,14 @@
+'''This script runs the primary analysis. It produces 2 main tables: 
+
+  1. rule_cis.xlsx -- the performance metrics and accompanying CIs for each rule
+  2. slim_diff_cis.xlsx -- adult-child differences in sens and spec
+ 
+We use bias-corrected and accelerated (BCa) bootstrap CIs, so each CI requires
+running a jackknife to construct. When the number of bootstrap samples (N_BOOT)
+is high, it will take a while to run the script, even on machines that support
+multiprocessing. 
+'''
+
 import numpy as np
 import pandas as pd
 import itertools
@@ -11,9 +22,7 @@ from sklearn.metrics import f1_score
 import tools
 import multi
 
-'''
-Setting some basic parameters for the experiment
-'''
+
 # Whether to adjust confidence intervals for single defs and symptoms
 BONF_SINGLE = False
 
@@ -41,9 +50,6 @@ REFORMAT_CIS = False
 # Whether this is running on Windows
 WINDOWS = True
 
-'''
-Importing and organizing the data
-'''
 # Reading in the data
 if WINDOWS:
     file_dir = WINDOWS_FILE_DIR
@@ -77,10 +83,6 @@ rule_names = ['symptoms', 'existing defs', 'new defs']
 kids = np.where(records.age_adult == 0)[0]
 adults = np.where(records.age_adult == 1)[0]
 
-# Organizing by preexisting conditions
-#cond = np.where(records.any_cond2 == 1)[0]
-#no_cond = np.where(records.any_cond2 == 0)[0]
-
 # Pinning down the inputs and targets
 X = np.array(records[symptom_list], dtype=np.uint8)
 y = np.array(records.pcr_pos, dtype=np.uint8)
@@ -94,9 +96,6 @@ strata = [(X_list[i], y_list[i]) for i in range(len(X_list))]
 strata_idx = [np.array(list(range(X.shape[0]))), adults, kids]
 strata_names = ['all', 'adults', 'kids']
 
-'''
-Running the bootstrap confidence intervals for the single rules
-'''
 # Initializing a multiprocessing.Pool to help with the calculations
 p = Pool()
 
@@ -187,9 +186,6 @@ if EXCEL:
         df.to_excel(writer, sheet_name=strata_names[i])
     writer.save()
 
-'''
-Running the bootstrap CIs for differences between adults and children
-'''
 # Loading the adult and kid CIs 
 with open(file_dir + 'adults_cis.pkl', 'rb') as f:
     adult_cis = pickle.load(f)
@@ -234,4 +230,3 @@ if EXCEL:
     writer = pd.ExcelWriter(file_dir + 'slim_diff_cis.xlsx')
     slim_diffs.to_excel(writer, sheet_name='adults vs kids')
     writer.save()
-
