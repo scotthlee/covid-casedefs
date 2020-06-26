@@ -23,9 +23,9 @@ OMIT_DISC = True
 
 # Reading in the data
 if WINDOWS:
-    file_dir = WINDOWS_DIR
+    file_dir = WINDOWS_FILE_DIR
 else:
-    file_dir = UNIX_DIR
+    file_dir = UNIX_FILE_DIR
 
 records = pd.read_csv(file_dir + 'records.csv')
 
