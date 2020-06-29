@@ -13,7 +13,7 @@ from multiprocessing import Pool
 def threshold(probs, cutoff=.5):
     '''Converts probabilities to class guesses.
     
-    Keyword arguments:
+    Parameters:
       probs -- the probabilities to be cut (float in [0, 1])
       cutoff -- the probability cut point (float in [0, 1])
     
@@ -26,7 +26,7 @@ def threshold(probs, cutoff=.5):
 def mcnemar_test(targets, guesses, cc=True):
     '''Runs McNemar's test for the difference in paired proportions.
     
-    Keyword arguments:
+    Parameters:
       targets -- the true labels (arr of {0, 1})
       guesses -- the predicted labels (arr of {0, 1})
       cc -- whether to perform a continuity correction (bool)
@@ -54,7 +54,7 @@ def mcnemar_test(targets, guesses, cc=True):
 def brier_score(targets, guesses):
     '''Calculates Brier score, or mean squared error.
     
-    Keyword arguments:
+    Parameters:
       targets -- the true labels (arr of {0, 1})
       guesses -- the predicted labels ()
     
@@ -67,7 +67,7 @@ def brier_score(targets, guesses):
 def slim_metrics(df, rules, by=None):
     '''Returns number and percent positive for a set of predicted labels.
     
-    Keyword arguments:
+    Parameters:
       df -- a data frame holding the columns of predicted labels
       rules -- column names for the predicted labels
       by -- criteria to use for counting, e.g., for calculating sensitivity
@@ -205,7 +205,7 @@ def macro_clf_metrics(targets,
     '''Performs weighted or unweighted macro-averaging of clf_metrics()
     by a group variable.
     
-    Keyword arguments:
+    Parameters:
       targets -- the true labels(arr of {0 , 1})
       guesses -- the predict labels (arr of {0, 1})
       by -- an array of group IDs to use for averaging (1-d array)
