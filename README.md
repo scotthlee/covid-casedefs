@@ -4,9 +4,9 @@
 
 Describe the purpose of your project. Add additional sections as necessary to help collaborators and potential collaborators understand and use your project.
 
-## The data
-
 ## The code
+
+## The data
 
 ## Public Domain Standard Notice
 This repository constitutes a work of the United States Government and is not
