@@ -16,7 +16,7 @@ def jackknife_metrics(targets,
                       guesses,
                       average_by=None,
                       weighted=True):
-    '''Produces jacknife (leave-one-out) scores and means for the output of
+    '''Produces jackknife (leave-one-out) scores and means for the output of
     tools.clf_metrics(). 
     
     Keyword arguments:
@@ -24,6 +24,9 @@ def jackknife_metrics(targets,
       2. guesses -- the predicted labels (arr of {0, 1})
       3. average_by -- the variable to use for macro averaging (1-d array)
       4. weighted -- whether to weight macro averaging (bool)
+    
+    Returns:
+      1. scores, means: the jackknife scores and their means
     '''
     # Replicates of the dataset with one row missing from each
     rows = np.array(list(range(targets.shape[0])))

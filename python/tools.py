@@ -10,13 +10,33 @@ from copy import deepcopy
 from multiprocessing import Pool
 
 
-# Quick function for thresholding probabilities
 def threshold(probs, cutoff=.5):
+    '''Converts probabilities to class guesses.
+    
+    Keyword arguments:
+      1. probs -- the probabilities to be cut (float in [0, 1])
+      2. cutoff -- the probability cut point (float in [0, 1])
+    
+    Returns:
+      1. class guesses as ints from {0, 1}
+    '''
     return np.array(probs >= cutoff).astype(np.uint8)
 
 
-# Calculates McNemar's chi-squared statistic
-def mcnemar_test(true, pred, cc=True):
+def mcnemar_test(targets, guesses, cc=True):
+    '''Runs McNemar's test for the difference in paired proportions.
+    
+    Keyword arguments:
+      1. targets -- the true labels (arr of {0, 1})
+      2. guesses -- the predicted labels (arr of {0, 1})
+      3. cc -- whether to perform a continuity correction (bool)
+    
+    Returns:
+      1. 'b': false negative counts
+      2. 'c': false positive counts
+      3. 'stat': chi-squared statistic
+      4. 'pval': p-value from the test
+    '''
     cm = confusion_matrix(true, pred)
     b = int(cm[0, 1])
     c = int(cm[1, 0])
@@ -31,13 +51,30 @@ def mcnemar_test(true, pred, cc=True):
     return out
 
 
-# Calculates the Brier score for multiclass problems
-def brier_score(true, pred):
+def brier_score(targets, guesses):
+    '''Calculates Brier score, or mean squared error.
+    
+    Keyword arguments:
+      1. targets -- the true labels (arr of {0, 1})
+      2. guesses -- the predicted labels ()
+    
+    Returns:
+      1. Brier score (float in (0, 1))
+    '''
     return np.sum((pred - true)**2) / true.shape[0]
 
 
-# Slim version of clf_metrics
 def slim_metrics(df, rules, by=None):
+    '''Returns number and percent positive for a set of predicted labels.
+    
+    Keyword arguments:
+      1. df -- a data frame holding the columns of predicted labels
+      2. rules -- column names for the predicted labels
+      3. by -- criteria to use for counting, e.g., for calculating sensitivity
+    
+    Returns:
+      1. a df with the rule, n positive, and percent positive
+    '''
     if by is not None:
         good_idx = np.where(by == 1)[0]
         df = df.iloc[good_idx]
@@ -52,14 +89,45 @@ def slim_metrics(df, rules, by=None):
     return out_df
 
 
-# Runs basic diagnostic stats on binary (only) predictions
-def clf_metrics(true, 
-                pred,
+def clf_metrics(targets, 
+                guesses,
                 average_by=None,
                 weighted=True,
                 round=4,
                 round_pval=False,
                 mcnemar=False):
+    '''Calculates a range of binary classification metrics for a set of class
+    predictions relative to a reference standard.
+    
+    Keyword arugments:
+      1. targets -- the true labels (arr of {0, 1})
+      2. guesses -- the predicted labels (arr of {0, 1})
+      3. average_by -- the variable to use for macro averaging (1-d array)
+      4. weighted -- whether to weight macro averaging (bool)
+      5. round -- number of significant digits to report
+      6. round_pval -- whether to round p-values from McNemar's test (bool)
+      7. mcnemar -- whether to run McNemar's test
+    
+    Returns:
+      1. a one-row data frame with the following columns:
+        tp -- true positive count
+        fp -- false positive count
+        tn -- true negative count
+        fn -- false negative count
+        sens -- sensitivity
+        spec -- specificity
+        ppv -- positive predictive value
+        npv -- negative predictive value
+        j -- Youden's j index
+        mcc -- Matthews correlation coefficient
+        brier -- Brier score (or 1 - acc)
+        f1 -- F1 score
+        
+        true_prev -- true prevalence
+        pred_prev -- predicted prevalence
+        abs_diff -- absolute difference in prevalence
+        rel_prev_diff -- percent difference in prevalence   
+    '''
     
     # Converting pd.Series to np.array
     stype = type(pd.Series())
@@ -72,8 +140,8 @@ def clf_metrics(true,
     
     # Optionally returning macro-average results
     if average_by is not None:
-        return macro_clf_metrics(targets=true,
-                                 guesses=pred,
+        return macro_clf_metrics(targets=targets,
+                                 guesses=guesses,
                                  by=average_by,
                                  weighted=weighted,
                                  round=round)
@@ -126,7 +194,6 @@ def clf_metrics(true,
     return out
 
 
-# Performs either macro or weighted macro averaging of clf_metrics
 def macro_clf_metrics(targets,
                       guesses,
                       by,
@@ -211,8 +278,6 @@ def average_pvals(p_vals,
     return p_avg
 
 
-# Generates bootstrap indices of a dataset with the option
-# to stratify by one of the (binary-valued) variables
 def boot_sample(df,
                 by=None,
                 size=None,
