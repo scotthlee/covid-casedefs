@@ -14,11 +14,11 @@ def threshold(probs, cutoff=.5):
     '''Converts probabilities to class guesses.
     
     Keyword arguments:
-      1. probs -- the probabilities to be cut (float in [0, 1])
-      2. cutoff -- the probability cut point (float in [0, 1])
+      probs -- the probabilities to be cut (float in [0, 1])
+      cutoff -- the probability cut point (float in [0, 1])
     
     Returns:
-      1. class guesses as ints from {0, 1}
+      class guesses as ints from {0, 1}
     '''
     return np.array(probs >= cutoff).astype(np.uint8)
 
@@ -27,15 +27,15 @@ def mcnemar_test(targets, guesses, cc=True):
     '''Runs McNemar's test for the difference in paired proportions.
     
     Keyword arguments:
-      1. targets -- the true labels (arr of {0, 1})
-      2. guesses -- the predicted labels (arr of {0, 1})
-      3. cc -- whether to perform a continuity correction (bool)
+      targets -- the true labels (arr of {0, 1})
+      guesses -- the predicted labels (arr of {0, 1})
+      cc -- whether to perform a continuity correction (bool)
     
     Returns:
-      1. 'b': number of false negatives
-      2. 'c': number of false positivies
-      3. 'stat': chi-squared statistic
-      4. 'pval': p-value from the test
+      'b': number of false negatives
+      'c': number of false positivies
+      'stat': chi-squared statistic
+      'pval': p-value from the test
     '''
     cm = confusion_matrix(true, pred)
     b = int(cm[0, 1])
@@ -55,11 +55,11 @@ def brier_score(targets, guesses):
     '''Calculates Brier score, or mean squared error.
     
     Keyword arguments:
-      1. targets -- the true labels (arr of {0, 1})
-      2. guesses -- the predicted labels ()
+      targets -- the true labels (arr of {0, 1})
+      guesses -- the predicted labels ()
     
     Returns:
-      1. Brier score (float in (0, 1))
+      Brier score (float in (0, 1))
     '''
     return np.sum((pred - true)**2) / true.shape[0]
 
@@ -68,12 +68,12 @@ def slim_metrics(df, rules, by=None):
     '''Returns number and percent positive for a set of predicted labels.
     
     Keyword arguments:
-      1. df -- a data frame holding the columns of predicted labels
-      2. rules -- column names for the predicted labels
-      3. by -- criteria to use for counting, e.g., for calculating sensitivity
+      df -- a data frame holding the columns of predicted labels
+      rules -- column names for the predicted labels
+      by -- criteria to use for counting, e.g., for calculating sensitivity
     
     Returns:
-      1. a df with the rule, n positive, and percent positive
+      a df with the rule, n positive, and percent positive
     '''
     if by is not None:
         good_idx = np.where(by == 1)[0]
@@ -100,16 +100,16 @@ def clf_metrics(targets,
     predictions relative to a reference standard.
     
     Keyword arugments:
-      1. targets -- the true labels (arr of {0, 1})
-      2. guesses -- the predicted labels (arr of {0, 1})
-      3. average_by -- the variable to use for macro averaging (1-d array)
-      4. weighted -- whether to weight macro averaging (bool)
-      5. round -- number of significant digits to report
-      6. round_pval -- whether to round p-values from McNemar's test (bool)
-      7. mcnemar -- whether to run McNemar's test
+      targets -- the true labels (arr of {0, 1})
+      guesses -- the predicted labels (arr of {0, 1})
+      average_by -- the variable to use for macro averaging (1-d array)
+      weighted -- whether to weight macro averaging (bool)
+      round -- number of significant digits to report
+      round_pval -- whether to round p-values from McNemar's test (bool)
+      mcnemar -- whether to run McNemar's test
     
     Returns:
-      1. a one-row data frame with the following columns:
+      a one-row data frame with the following columns:
         tp -- true positive count
         fp -- false positive count
         tn -- true negative count
@@ -206,16 +206,16 @@ def macro_clf_metrics(targets,
     by a group variable.
     
     Keyword arguments:
-      1. targets -- the true labels(arr of {0 , 1})
-      2. guesses -- the predict labels (arr of {0, 1})
-      3. by -- an array of group IDs to use for averaging (1-d array)
-      4. weighted -- whether to return a weighted average
-      5. round -- number of significant digits to return
-      6. p_method -- how to average p-values; may be 'harmonic' or 'fisher'
+      targets -- the true labels(arr of {0 , 1})
+      guesses -- the predict labels (arr of {0, 1})
+      by -- an array of group IDs to use for averaging (1-d array)
+      weighted -- whether to return a weighted average
+      round -- number of significant digits to return
+      p_method -- how to average p-values; may be 'harmonic' or 'fisher'
       7. mcnemar -- whether to run McNemar's test (bool)
      
     Returns:
-      1. the df from clf_metrics() where everything has been averaged
+      the df from clf_metrics() where everything has been averaged
     '''
     # Column groups for rounding later
     count_cols = ['tp', 'fp', 'tn', 'fn']
@@ -283,14 +283,14 @@ def average_pvals(p_vals,
     '''Averages p-values using either the harmonic mean or Fisher's method.
     
     Parameters:
-      1. p_vals -- the p-values (arr of floats in [0, 1])
-      2. w -- the weights for averaging
-      3. method -- either 'harmonic' (default) or 'fisher' (str)
-      4. smooth -- whether to fix pvals of 0.0 (bool)
-      5. smooth_val -- the amount to use for smoothing (float)
+      p_vals -- the p-values (arr of floats in [0, 1])
+      w -- the weights for averaging
+      method -- either 'harmonic' (default) or 'fisher' (str)
+      smooth -- whether to fix pvals of 0.0 (bool)
+      smooth_val -- the amount to use for smoothing (float)
     
     Returns:
-      1. the average p-value (single float in [0, 1])
+      the average p-value (single float in [0, 1])
     '''
     if smooth:
         p = p_vals + smooth_val
@@ -314,11 +314,11 @@ def boot_sample(df,
     '''Returns a single bootstrap sample of rows from a data frame.
     
     Parameters:
-      1. df -- the data frame holding the records (2-d array or pd.DataFrame)
-      2. by -- an array of group IDs for sampling by group instead of row (arr)
-      3. size -- the size of bootstrap samples to take, if not nrow(df) (int)
-      4. seed -- seed to use for generating the random sample (int)
-      5. return_df -- whether to return row indices (False) or the df (True)
+      df -- the data frame holding the records (2-d array or pd.DataFrame)
+      by -- an array of group IDs for sampling by group instead of row (arr)
+      size -- the size of bootstrap samples to take, if not nrow(df) (int)
+      seed -- seed to use for generating the random sample (int)
+      return_df -- whether to return row indices (False) or the df (True)
     
     Returns:
       1a. An array of bootstrap-sampled row numbers, if return_df is False; OR
@@ -367,15 +367,15 @@ def diff_boot_cis(ref,
     performance metrics between two competing classifiers.
     
     Parameters:
-      1. ref -- the refernece multi.boot_cis object
-      2. comp -- the comparison multi.boot_cis object
-      3. a -- significance level for the intervals (float in [0, 1])
-      4. abs_diff -- whether to take the absolute value of the difference (bool)
-      5. method -- interval method; options are 'diff', 'pct', and 'bca'
-      6. interpolation -- interpolation method for np.quantile
+      ref -- the refernece multi.boot_cis object
+      comp -- the comparison multi.boot_cis object
+      a -- significance level for the intervals (float in [0, 1])
+      abs_diff -- whether to take the absolute value of the difference (bool)
+      method -- interval method; options are 'diff', 'pct', and 'bca'
+      interpolation -- interpolation method for np.quantile
       
     Returns:
-      1. A pd.DataFrame with the following columns: 
+      A pd.DataFrame with the following columns: 
         ref -- the reference value for the metric
         comp -- the comparison value for the metric
         d -- the (absolute) difference between the ref and the comp values
@@ -478,12 +478,12 @@ def roc_cis(rocs, alpha=0.05, round=2):
     '''Calculates upper and lower bounds for a collection of ROC curves. 
     
     Parameters:
-      1. rocs -- the sklearn.metrics.roc_curve curves
-      2. alpha -- significance value for constructing the intervals
-      3. round -- number of significant digits to report
+      rocs -- the sklearn.metrics.roc_curve curves
+      alpha -- significance value for constructing the intervals
+      round -- number of significant digits to report
       
     Returns:
-      1. A pd.DataFrame with the following columns:
+      A pd.DataFrame with the following columns:
         fpr -- false positive rate
         lower -- lower bound of the true positive rate (tpr)
         med -- median for the tpr
@@ -518,13 +518,13 @@ def x_at_y(x, y, yval, grid):
      finding maximum specifiicity achievable for a given sensitivity.)
      
      Parameters:
-       1. x -- column name of the metric to optimize
-       2. y -- column name of the metric for the basis of optimizing x
-       3. yval -- the minimum value of y required for x
-       4. grid -- the pd.DataFrame holding the data
+       x -- column name of the metric to optimize
+       y -- column name of the metric for the basis of optimizing x
+       yval -- the minimum value of y required for x
+       grid -- the pd.DataFrame holding the data
      
      Returns:
-       1. The max value of df[x] that still gets you a minimum value of df[y]
+       The max value of df[x] that still gets you a minimum value of df[y]
     '''
     y = np.array(grid[y])
     x = np.array(grid[x])
@@ -538,12 +538,12 @@ def merge_cis(df, stats, round=4):
     '''Merges the upper and lower columns from a boot_cis object.
     
     Parameters:
-      1. df -- the boot_cis.cis object
-      2. stats -- the list of metrics to include in the reformatted table
-      3. round -- number of significant digits to report
+      df -- the boot_cis.cis object
+      stats -- the list of metrics to include in the reformatted table
+      round -- number of significant digits to report
     
     Returns:
-      1. df -- A pd.DataFrame with the merged CI columns
+      df -- A pd.DataFrame with the merged CI columns
     '''
     df = deepcopy(df)
     for stat in stats:

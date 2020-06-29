@@ -20,13 +20,13 @@ def jackknife_metrics(targets,
     tools.clf_metrics(). 
     
     Parameters:
-      1. targets -- the true labels (arr of {0, 1})
-      2. guesses -- the predicted labels (arr of {0, 1})
-      3. average_by -- the variable to use for macro averaging (1-d array)
-      4. weighted -- whether to weight macro averaging (bool)
+      targets -- the true labels (arr of {0, 1})
+      guesses -- the predicted labels (arr of {0, 1})
+      average_by -- the variable to use for macro averaging (1-d array)
+      weighted -- whether to weight macro averaging (bool)
     
     Returns:
-      1. scores, means -- the jackknife scores and their means
+      scores, means -- the jackknife scores and their means
     '''
     # Replicates of the dataset with one row missing from each
     rows = np.array(list(range(targets.shape[0])))
@@ -50,8 +50,8 @@ class boot_cis:
     '''Wrapper class for the boot_cis function
     
     Attributes:
-      1. cis -- confidence intervals
-      2. scores -- observed metrics for each bootstrap sample
+      cis -- confidence intervals
+      scores -- observed metrics for each bootstrap sample
     '''
     
     def __init__(self,
@@ -70,17 +70,17 @@ class boot_cis:
         metrics produced by tools.clf_metrics(). 
         
         Parameters:
-          1. targets -- the true labels (arr of {0, 1})
-          2. guesses -- the predicted labels (arr of {0, 1})
-          3. sample_by -- group IDs to be used for sampling (1-d array)
-          4. n -- number of bootstrap samples to compute (int)
-          5. a -- significance level for the intervals (float from 0 to 1)
-          6. method -- interval method; options are 'diff', 'pct', and 'bca'
-          7. interpolation -- interpolation method for np.quantile
-          8. average_by -- the variable to use for macro averaging
-          9. weighted -- whether to weight macro averaging (bool)
-          10. mcnemar -- whether to return a p-value from McNemar's test (bool)
-          11. seed -- seed to use for generating bootstrap seeds (int)     
+          targets -- the true labels (arr of {0, 1})
+          guesses -- the predicted labels (arr of {0, 1})
+          sample_by -- group IDs to be used for sampling (1-d array)
+          n -- number of bootstrap samples to compute (int)
+          a -- significance level for the intervals (float from 0 to 1)
+          method -- interval method; options are 'diff', 'pct', and 'bca'
+          interpolation -- interpolation method for np.quantile
+          average_by -- the variable to use for macro averaging
+          weighted -- whether to weight macro averaging (bool)
+          mcnemar -- whether to return a p-value from McNemar's test (bool)
+          seed -- seed to use for generating bootstrap seeds (int)     
         '''
         # Converting everything to NumPy arrays, just in case
         stype = type(pd.Series())
@@ -230,14 +230,14 @@ def boot_roc(targets,
     from a scikit-learn random forest or SVM.
     
     Parameters:
-      1. targets -- the true labels (arr of {0, 1})
-      2. scores -- predicted positive probabilities (arr of {0, 1})
-      3. sample_by -- group ID to be used for sampling (arr)
-      4. n -- number of bootstrap samples to compute (int)
-      5. seed -- initial seed to use for generating bootstrap samples (int)
+      targets -- the true labels (arr of {0, 1})
+      scores -- predicted positive probabilities (arr of {0, 1})
+      sample_by -- group ID to be used for sampling (arr)
+      n -- number of bootstrap samples to compute (int)
+      seed -- initial seed to use for generating bootstrap samples (int)
     
     Returns:
-      1. a list of scikit-learn roc_curves
+      a list of scikit-learn roc_curves
     '''
     # Generating the seeds
     np.random.seed(seed)
