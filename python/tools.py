@@ -32,8 +32,8 @@ def mcnemar_test(targets, guesses, cc=True):
       3. cc -- whether to perform a continuity correction (bool)
     
     Returns:
-      1. 'b': false negative counts
-      2. 'c': false positive counts
+      1. 'b': number of false negatives
+      2. 'c': number of false positivies
       3. 'stat': chi-squared statistic
       4. 'pval': p-value from the test
     '''
@@ -126,7 +126,8 @@ def clf_metrics(targets,
         true_prev -- true prevalence
         pred_prev -- predicted prevalence
         abs_diff -- absolute difference in prevalence
-        rel_prev_diff -- percent difference in prevalence   
+        rel_prev_diff -- percent difference in prevalence
+        mcnemar -- p-value from McNemar's test (optional)   
     '''
     
     # Converting pd.Series to np.array
@@ -201,6 +202,21 @@ def macro_clf_metrics(targets,
                       round=4,
                       p_method='harmonic',
                       mcnemar=True):
+    '''Performs weighted or unweighted macro-averaging of clf_metrics()
+    by a group variable.
+    
+    Keyword arguments:
+      1. targets -- the true labels(arr of {0 , 1})
+      2. guesses -- the predict labels (arr of {0, 1})
+      3. by -- an array of group IDs to use for averaging (1-d array)
+      4. weighted -- whether to return a weighted average
+      5. round -- number of significant digits to return
+      6. p_method -- how to average p-values; may be 'harmonic' or 'fisher'
+      7. mcnemar -- whether to run McNemar's test (bool)
+     
+    Returns:
+      1. the df from clf_metrics() where everything has been averaged
+    '''
     # Column groups for rounding later
     count_cols = ['tp', 'fp', 'tn', 'fn']
     prev_cols = ['true_prev', 'pred_prev', 'prev_diff']
@@ -264,6 +280,18 @@ def average_pvals(p_vals,
                   method='harmonic',
                   smooth=True,
                   smooth_val=1e-7):
+    '''Averages p-values using either the harmonic mean or Fisher's method.
+    
+    Parameters:
+      1. p_vals -- the p-values (arr of floats in [0, 1])
+      2. w -- the weights for averaging
+      3. method -- either 'harmonic' (default) or 'fisher' (str)
+      4. smooth -- whether to fix pvals of 0.0 (bool)
+      5. smooth_val -- the amount to use for smoothing (float)
+    
+    Returns:
+      1. the average p-value (single float in [0, 1])
+    '''
     if smooth:
         p = p_vals + smooth_val
     else:
@@ -283,7 +311,19 @@ def boot_sample(df,
                 size=None,
                 seed=None,
                 return_df=False):
+    '''Returns a single bootstrap sample of rows from a data frame.
     
+    Parameters:
+      1. df -- the data frame holding the records (2-d array or pd.DataFrame)
+      2. by -- an array of group IDs for sampling by group instead of row (arr)
+      3. size -- the size of bootstrap samples to take, if not nrow(df) (int)
+      4. seed -- seed to use for generating the random sample (int)
+      5. return_df -- whether to return row indices (False) or the df (True)
+    
+    Returns:
+      1a. An array of bootstrap-sampled row numbers, if return_df is False; OR
+      1b. A boostrap sample of the original df, if return_df is True
+    '''
     # Setting the random states for the samples
     if seed is None:
         seed = np.random.randint(1, 1e6, 1)[0]
@@ -323,6 +363,25 @@ def diff_boot_cis(ref,
                   abs_diff=False, 
                   method='bca',
                   interpolation='nearest'):
+    '''Calculates boostrap confidence intervals for the difference in
+    performance metrics between two competing classifiers.
+    
+    Parameters:
+      1. ref -- the refernece multi.boot_cis object
+      2. comp -- the comparison multi.boot_cis object
+      3. a -- significance level for the intervals (float in [0, 1])
+      4. abs_diff -- whether to take the absolute value of the difference (bool)
+      5. method -- interval method; options are 'diff', 'pct', and 'bca'
+      6. interpolation -- interpolation method for np.quantile
+      
+    Returns:
+      1. A pd.DataFrame with the following columns: 
+        ref -- the reference value for the metric
+        comp -- the comparison value for the metric
+        d -- the (absolute) difference between the ref and the comp values
+        lower -- the lower bound for the difference
+        upper -- the upper bound for the difference
+    '''
     # Quick check for a valid estimation method
     methods = ['pct', 'diff', 'bca']
     assert method in methods, 'Method must be pct, diff, or bca.'
@@ -416,6 +475,16 @@ def diff_boot_cis(ref,
 
 
 def roc_cis(rocs, alpha=0.05, round=2):
+    '''Calculates upper and lower bounds for a collection of ROC curves. 
+    
+    Parameters:
+      1. rocs -- the sklearn.metrics.roc_curve curves
+      2. alpha -- significance value for constructing the intervals
+      3. round -- number of significant digits to report
+      
+    Returns:
+      1. 
+    '''
     # Getting the quantiles to make CIs
     lq = (alpha / 2) * 100
     uq = (1 - (alpha / 2)) * 100
