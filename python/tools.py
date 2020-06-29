@@ -483,7 +483,11 @@ def roc_cis(rocs, alpha=0.05, round=2):
       3. round -- number of significant digits to report
       
     Returns:
-      1. 
+      1. A pd.DataFrame with the following columns:
+        fpr -- false positive rate
+        lower -- lower bound of the true positive rate (tpr)
+        med -- median for the tpr
+        upper -- upper bound for the tpr
     '''
     # Getting the quantiles to make CIs
     lq = (alpha / 2) * 100
@@ -509,9 +513,19 @@ def roc_cis(rocs, alpha=0.05, round=2):
     return quant_df
 
 
-# Returns the maximum value of metric X that achieves a value of
-# at least yval on metric Y
 def x_at_y(x, y, yval, grid):
+    '''Calculates the maximum value of x for a minimum value of y (e.g., when
+     finding maximum specifiicity achievable for a given sensitivity.)
+     
+     Parameters:
+       1. x -- column name of the metric to optimize
+       2. y -- column name of the metric for the basis of optimizing x
+       3. yval -- the minimum value of y required for x
+       4. grid -- the pd.DataFrame holding the data
+     
+     Returns:
+       1. The max value of df[x] that still gets you a minimum value of df[y]
+    '''
     y = np.array(grid[y])
     x = np.array(grid[x])
     assert np.sum(y >= yval) > 0, 'No y vals meet the minimum'
@@ -520,8 +534,17 @@ def x_at_y(x, y, yval, grid):
     return best_x
 
 
-# Converts a boot_cis['cis'] object to a single row
 def merge_cis(df, stats, round=4):
+    '''Merges the upper and lower columns from a boot_cis object.
+    
+    Parameters:
+      1. df -- the boot_cis.cis object
+      2. stats -- the list of metrics to include in the reformatted table
+      3. round -- number of significant digits to report
+    
+    Returns:
+      1. df -- A pd.DataFrame with the merged CI columns
+    '''
     df = deepcopy(df)
     for stat in stats:
         lower = stat + '.lower'
@@ -536,7 +559,6 @@ def merge_cis(df, stats, round=4):
     return df
 
 
-# Makes a sparse array out of data frame of discrete variables
 def sparsify(col, 
              reshape=True, 
              return_df=True,
