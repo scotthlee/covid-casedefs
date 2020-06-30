@@ -19,13 +19,13 @@ def jackknife_metrics(targets,
     '''Produces jackknife (leave-one-out) scores and means for the output of
     tools.clf_metrics(). 
     
-    Parameters:
+    Parameters
       targets: the true labels (arr of {0, 1})
       guesses: the predicted labels (arr of {0, 1})
       average_by: the variable to use for macro averaging (1-d array)
       weighted: whether to weight macro averaging (bool)
     
-    Returns:
+    Returns
       scores, means: the jackknife scores and their means
     '''
     # Replicates of the dataset with one row missing from each
@@ -69,7 +69,7 @@ class boot_cis:
         '''Produces bootstrap confidence intervals for binary classification
         metrics produced by tools.clf_metrics(). 
         
-        Parameters:
+        Parameters
           targets: the true labels (arr of {0, 1})
           guesses: the predicted labels (arr of {0, 1})
           sample_by: group IDs to be used for sampling (1-d array)
@@ -229,14 +229,14 @@ def boot_roc(targets,
     '''Returns ROC curves for bootstrap samples of predicted scores, e.g.,
     from a scikit-learn random forest or SVM.
     
-    Parameters:
+    Parameters
       targets: the true labels (arr of {0, 1})
       scores: predicted positive probabilities (arr of {0, 1})
       sample_by: group ID to be used for sampling (arr)
       n: number of bootstrap samples to compute (int)
       seed: initial seed to use for generating bootstrap samples (int)
     
-    Returns:
+    Returns
       a list of scikit-learn roc_curves
     '''
     # Generating the seeds
