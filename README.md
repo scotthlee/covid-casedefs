@@ -16,7 +16,7 @@ In the data, we have information about symptoms for each of the study participan
   9. `cli`: COVID-like illness
   10. `vaccine`s: CDC COVID vaccine group proposed trial endpoints
   11. `sero_pos`: whether ELISA detected SARS-CoV-2 antibodies
-  12. `sero_conv`: whether the contact seroconverted during the 2-week observation period
+  12. `sero_conv`: whether the participant seroconverted during the observation period
   13. `pcr_pos`: whether RT-PCR detected SARS-CoV-2 infection
   14. `any_pos`: whether ELISA or RT-PCR was positive
 
