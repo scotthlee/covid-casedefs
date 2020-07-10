@@ -1,5 +1,4 @@
-# Household transmission case definition study
-
+# Symptom combinations for detecting SARS-CoV-2 in non-hospitalized persons
 ## Overview
 Describe the purpose of your project. Add additional sections as necessary to help collaborators and potential collaborators understand and use your project.
 
