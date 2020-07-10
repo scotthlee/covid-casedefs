@@ -56,7 +56,7 @@ def brier_score(targets, guesses):
     
     Parameters
       targets: the true labels (arr of {0, 1})
-      guesses: the predicted labels ()
+      guesses: the predicted scores (float in (0, 1) or int from {0, 1})
     
     Returns
       Brier score (float in (0, 1))
