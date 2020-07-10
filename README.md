@@ -12,7 +12,13 @@ We used both R and Python to do the analysis for this study. There's a good deal
   3. [combo_search.py](https://github.com/scotthlee/hh-transmission/blob/master/python/combo_search.py): runs the combinatorial symptom search
   4. [rf.py](https://github.com/scotthlee/hh-transmission/blob/master/python/rf.py): trains a random forest on the data
   5. [primary_analysis.py](https://github.com/scotthlee/hh-transmission/blob/master/python/primary_analysis.py): produces the statistics and tables in the manuscript
-
+  
+  ### R
+  1. [0-hh--data.R](https://github.com/scotthlee/hh-transmission/blob/master/r/0-hh--data.R): Read in source CSV data file; set up names, analytic data
+  2. [1-hh-combos.R](https://github.com/scotthlee/hh-transmission/blob/master/r/1-hh-combos.R): Calculate performance of preconstructed rules and of symptom combinations
+  3. [2-hh-resampling.R](https://github.com/scotthlee/hh-transmission/blob/master/r/2-hh-resampling.R): Construct pseudosamples by resampling households
+  4. [3-hh-graphs-combos.R](https://github.com/scotthlee/hh-transmission/blob/master/r/3-hh-graphs-combos.R): Graphics: how symptom combinations perform
+  5. [4-hh-graphs-adult-child.R](https://github.com/scotthlee/hh-transmission/blob/master/r/4-hh-graphs-adult-child.R): Graphics: how selected rules perform in adults and children
 
 For more info, check out the respective READMEs. 
 
