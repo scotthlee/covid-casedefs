@@ -9,7 +9,20 @@ We used both R and Python to do the analysis for this study. There's a good deal
 ## The data
 In the data, we have information about symptoms for each of the study participants, and we also have their SARS-CoV-2 PCR and ELISA test results. In our primary analysis, we frame the problem as one of binary classification, i.e., by predicting PCR status from different combinations of the symptoms. Here's a quick rundown of the variables:
 
-  1. 
+  1. `study_id`: participant identifier
+  2. `hh_id`: household identifier
+  3. `age_adult`: whether age is over (1) or under (0) 18 years
+  4. `wheeze` to `tastesmell_combo`: the symptoms
+  5. `ili`: influenza-like illness
+  6. `cdc`: CDC's COVID symptom list
+  7. `ari`: the WHO RSV ARI case definition
+  8. `cste`: the CSTE COVID case definition
+  9. `cli`: COVID-like illness
+  10. `vaccine`s: CDC COVID vaccine group proposed trial endpoints
+  11. `sero_pos`: whether ELISA detected SARS-CoV-2 antibodies
+  12. `sero_conv`: whether the contact seroconverted during the 2-week observation period
+  13. `pcr_pos`: whether RT-PCR detected SARS-CoV-2 infection
+  14. `any_pos`: whether ELISA or RT-PCR was positive
 
 ## Public Domain Standard Notice
 This repository constitutes a work of the United States Government and is not
