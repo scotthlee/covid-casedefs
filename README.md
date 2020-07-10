@@ -3,7 +3,7 @@
 ## Overview
 Describe the purpose of your project. Add additional sections as necessary to help collaborators and potential collaborators understand and use your project.
 
-## The code
+## Code
 We used both R and Python to do the analysis for this study. There's a good deal of overlap between the two sets of code, but in general, the R code is geared toward generating our graphics, while the Python code is geared toward generating the statistics we report in the tables. Here's quick manifest of the scripts:
 
   ### Python
@@ -22,7 +22,7 @@ We used both R and Python to do the analysis for this study. There's a good deal
 
 For more info, check out the respective READMEs. 
 
-## The data
+## Data
 In the data, we have information about symptoms for each of the study participants, and we also have their SARS-CoV-2 PCR and ELISA test results. In our primary analysis, we frame the problem as one of binary classification, i.e., by predicting PCR status from different combinations of the symptoms. Here's a quick rundown of the variables:
 
   1. `study_id`: participant identifier
