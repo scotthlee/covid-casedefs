@@ -1,4 +1,4 @@
-# Symptom combinations for detecting SARS-CoV-2 in non-hospitalized persons
+# Performance of Existing and Novel Surveillance Case Definitions for COVID-19 in a Community Cohort
 ## Overview
 Describe the purpose of your project. Add additional sections as necessary to help collaborators and potential collaborators understand and use your project.
 
