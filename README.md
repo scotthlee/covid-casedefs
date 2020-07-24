@@ -1,6 +1,6 @@
 # Performance of Existing and Novel Surveillance Case Definitions for COVID-19 in a Community Cohort
 ## Overview
-This code is from the paper "Performance of Existing and Novel Surveillance Case Definitions for COVID-19 in a Community Cohort". With access to the analytic dataset, it will reproduce the tables and figures from our manuscript. It can also be used to test out our methods, like the combinatorial symptom search, on your own data, which is pretty cool!
+This code is from the paper "Performance of Existing and Novel Surveillance Case Definitions for COVID-19 in a Community Cohort". With access to the analytic dataset, it will reproduce the tables and figures from our manuscript. It can also be used to test out our methods, like the combinatorial symptom search, on your own data.
 
 ## Data
 In the data, we have information about symptoms for each of the study participants, and we also have their SARS-CoV-2 PCR and ELISA test results. In our primary analysis, we frame the problem as one of binary classification, i.e., by predicting PCR status from different combinations of the symptoms. Here's a quick rundown of the variables:
