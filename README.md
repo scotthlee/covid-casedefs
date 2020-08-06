@@ -21,7 +21,7 @@ In the data, we have information about symptoms for each of the study participan
   14. `any_pos`: whether ELISA or RT-PCR was positive
 
 ## Code
-We used both R and Python to do the analysis for this study. There's a good deal of overlap between the two sets of code, but in general, the R code is geared toward generating our graphics, while the Python code is geared toward generating the statistics we report in the tables. Here's quick manifest of the scripts:
+We used both R and Python to do the analysis for this study. There's a good deal of overlap between the two sets of code, but in general, the R code is geared toward generating our graphics, while the Python code is geared toward generating the statistics we report in the tables. Here's a quick manifest of the scripts:
 
   ### Python
   1. [tools.py](https://github.com/scotthlee/hh-transmission/blob/master/python/tools.py): support functions used for the analysis
