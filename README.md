@@ -14,7 +14,6 @@ In the data, we have information about symptoms for each of the study participan
   7. `ari`: the WHO RSV ARI case definition
   8. `cste`: the CSTE COVID case definition
   9. `cli`: COVID-like illness
-  10. `vaccine`s: CDC COVID vaccine group proposed trial endpoints
   11. `sero_pos`: whether ELISA detected SARS-CoV-2 antibodies
   12. `sero_conv`: whether the participant seroconverted during the observation period
   13. `pcr_pos`: whether RT-PCR detected SARS-CoV-2 infection
