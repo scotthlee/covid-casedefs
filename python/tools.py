@@ -61,7 +61,7 @@ def brier_score(targets, guesses):
     Returns
       Brier score (float in (0, 1))
     '''
-    return np.sum((pred - true)**2) / true.shape[0]
+    return np.sum((guesses - targets)**2) / targets.shape[0]
 
 
 def slim_metrics(df, rules, by=None):
@@ -132,10 +132,10 @@ def clf_metrics(targets,
     
     # Converting pd.Series to np.array
     stype = type(pd.Series())
-    if type(pred) == stype:
-        pred = pred.values
-    if type(true) == stype:
-        true = true.values
+    if type(guesses) == stype:
+        guesses = guesses.values
+    if type(targets) == stype:
+        targets = targets.values
     if type(average_by) == stype:
         average_by == average_by.values
     
@@ -147,7 +147,7 @@ def clf_metrics(targets,
                                  weighted=weighted,
                                  round=round)
     # Constructing the 2x2 table
-    confmat = confusion_matrix(true, pred)
+    confmat = confusion_matrix(targets, guesses)
     tp = confmat[1, 1]
     fp = confmat[0, 1]
     tn = confmat[0, 0]
@@ -163,22 +163,23 @@ def clf_metrics(targets,
     mcc_num = ((tp * tn) - (fp * fn))
     mcc_denom = np.sqrt(((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn)))
     mcc = mcc_num / mcc_denom
-    brier = np.round(brier_score(true, pred), round)
+    brier = np.round(brier_score(targets, guesses), round)
     outmat = np.array([tp, fp, tn, fn,
                        sens, spec, ppv,
                        npv, j, f1, mcc, brier]).reshape(-1, 1)
     out = pd.DataFrame(outmat.transpose(),
                        columns=['tp', 'fp', 'tn', 
-                                'fn', 'sens', 'spec', 'ppv',
-                                'npv', 'j', 'f1', 'mcc', 'brier'])
+                                'fn', 'sens', 'spec', 
+                                'ppv', 'npv', 'j', 
+                                'f1', 'mcc', 'brier'])
     
     # Calculating some additional measures based on positive calls
-    true_prev = int(np.sum(true == 1))
-    pred_prev = int(np.sum(pred == 1))
+    true_prev = int(np.sum(targets == 1))
+    pred_prev = int(np.sum(guesses == 1))
     abs_diff = (true_prev - pred_prev) * -1
     rel_diff = np.round(abs_diff / true_prev, round)
     if mcnemar:
-        pval = mcnemar_test(true, pred).pval[0]
+        pval = mcnemar_test(targets, guesses).pval[0]
         if round_pval:
             pval = np.round(pval, round)
     count_outmat = np.array([true_prev, pred_prev, abs_diff, 
