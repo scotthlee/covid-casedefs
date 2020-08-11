@@ -70,7 +70,7 @@ symptom_list = [
     'abdpain', 'fever_chills', 'nasal_combo', 'tastesmell_combo'
 ]
 case_list = [
-    'ili', 'cdc', 'ari', 'cste', 'cli'
+    'ili', 'cdc', 'ari', 'cste_old', 'cste', 'cli'
 ]
 new_list = ['mc1', 'mc2', 'mc3', 'mc4']
 rule_lists = [symptom_list, case_list, new_list]
