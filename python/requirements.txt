@@ -1,7 +1,7 @@
 matplotlib==3.2.1
 numpy==1.22.0
 pandas==0.24.1
-scikit-learn==0.20.2
+scikit-learn
 scipy==1.10.0
 sklearn==0.0
 XlsxWriter==1.2.8
